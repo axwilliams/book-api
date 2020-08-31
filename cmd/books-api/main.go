@@ -8,6 +8,8 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/axwilliams/books-api/cmd/books-api/handlers"
+	"github.com/axwilliams/books-api/internal/business/book"
 	"github.com/axwilliams/books-api/internal/platform/database"
 	"github.com/axwilliams/books-api/internal/platform/database/postgres"
 	"github.com/gorilla/mux"
@@ -44,14 +46,14 @@ func run(log *log.Logger) error {
 		db.Close()
 	}()
 
-	// bookRepository := book.NewRepository(db)
-	// bookService := book.NewService(bookRepository)
-	// bookHandler := handlers.NewBookHandler(bookService)
+	bookRepository := book.NewRepository(db)
+	bookService := book.NewService(bookRepository)
+	bookHandler := handlers.NewBookHandler(bookService)
 
 	mux := mux.NewRouter()
 	api := mux.PathPrefix("/api/v1").Subrouter()
 
-	// api.HandleFunc("/books", bookHandler.FindAll).Methods("GET")
+	api.HandleFunc("/books", bookHandler.FindAll).Methods("GET")
 
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
