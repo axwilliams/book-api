@@ -11,12 +11,12 @@ import (
 
 	"github.com/axwilliams/books-api/cmd/books-api/handlers"
 	"github.com/axwilliams/books-api/internal/business/book"
+	"github.com/axwilliams/books-api/internal/middleware"
 	"github.com/axwilliams/books-api/internal/platform/database"
 	"github.com/axwilliams/books-api/internal/platform/database/postgres"
 	"github.com/axwilliams/books-api/internal/schema"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
-	"github.com/pkg/errors"
 )
 
 func main() {
@@ -73,6 +73,9 @@ func run(log *log.Logger) error {
 	mux := mux.NewRouter()
 	api := mux.PathPrefix("/api/v1").Subrouter()
 
+	api.Use(middleware.Authenticate)
+	api.Use(middleware.Logger)
+
 	api.HandleFunc("/books", bookHandler.FindAll).Methods("GET")
 
 	shutdown := make(chan os.Signal, 1)
@@ -87,7 +90,7 @@ func run(log *log.Logger) error {
 
 	select {
 	case err := <-svrErrs:
-		return errors.Wrap(err, "server error")
+		return fmt.Errorf("Server error: %+v", err)
 	case sig := <-shutdown:
 		log.Printf("[main] Starting shutdown: %v", sig)
 
