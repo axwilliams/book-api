@@ -11,7 +11,9 @@ import (
 
 	"github.com/axwilliams/books-api/cmd/books-api/handlers"
 	"github.com/axwilliams/books-api/internal/business/book"
+	"github.com/axwilliams/books-api/internal/business/user"
 	"github.com/axwilliams/books-api/internal/middleware"
+	"github.com/axwilliams/books-api/internal/platform/auth"
 	"github.com/axwilliams/books-api/internal/platform/database"
 	"github.com/axwilliams/books-api/internal/platform/database/postgres"
 	"github.com/axwilliams/books-api/internal/schema"
@@ -70,6 +72,10 @@ func run(log *log.Logger) error {
 	bookService := book.NewService(bookRepository)
 	bookHandler := handlers.NewBookHandler(bookService)
 
+	userRepository := user.NewRepository(db)
+	userService := user.NewService(userRepository)
+	userHandler := handlers.NewUserHandler(userService)
+
 	mux := mux.NewRouter()
 	api := mux.PathPrefix("/api/v1").Subrouter()
 
@@ -77,6 +83,14 @@ func run(log *log.Logger) error {
 	api.Use(middleware.Logger)
 
 	api.HandleFunc("/books", bookHandler.FindAll).Methods("GET")
+	api.HandleFunc("/books/{id}", bookHandler.FindById).Methods("GET")
+	api.HandleFunc("/books", middleware.HasRole(bookHandler.Add, auth.RoleAuthor)).Methods("POST")
+	api.HandleFunc("/books/{id}", middleware.HasRole(bookHandler.Edit, auth.RoleAuthor)).Methods("PATCH")
+	api.HandleFunc("/books/{id}", middleware.HasRole(bookHandler.Delete, auth.RoleAuthor)).Methods("DELETE")
+
+	api.HandleFunc("/users", middleware.HasRole(userHandler.Add, auth.RoleAdmin)).Methods("POST")
+	api.HandleFunc("/users/{id}", middleware.HasRole(userHandler.Edit, auth.RoleAdmin)).Methods("PATCH")
+	api.HandleFunc("/users/{id}", middleware.HasRole(userHandler.Delete, auth.RoleAdmin)).Methods("DELETE")
 
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
