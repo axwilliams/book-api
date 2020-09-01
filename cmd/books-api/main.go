@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -12,6 +13,7 @@ import (
 	"github.com/axwilliams/books-api/internal/business/book"
 	"github.com/axwilliams/books-api/internal/platform/database"
 	"github.com/axwilliams/books-api/internal/platform/database/postgres"
+	"github.com/axwilliams/books-api/internal/schema"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"github.com/pkg/errors"
@@ -21,7 +23,7 @@ func main() {
 	log := log.New(os.Stdout, "API : ", log.LstdFlags|log.Lmicroseconds|log.Lshortfile)
 
 	if err := run(log); err != nil {
-		log.Println("[error] ", err)
+		log.Println("[error]", err)
 		os.Exit(1)
 	}
 }
@@ -45,6 +47,24 @@ func run(log *log.Logger) error {
 		log.Println("[main] Stopping database")
 		db.Close()
 	}()
+
+	command := flag.String("command", "", "")
+	flag.Parse()
+
+	if len(*command) != 0 {
+		switch *command {
+		case "migrate":
+			err = schema.Migrate(db, log)
+		case "seed":
+			err = schema.Seed(db, log)
+		default:
+			return fmt.Errorf("Unknown command: %+v", err)
+		}
+
+		if err != nil {
+			return fmt.Errorf("Executing %s command: %+v", *command, err)
+		}
+	}
 
 	bookRepository := book.NewRepository(db)
 	bookService := book.NewService(bookRepository)

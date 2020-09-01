@@ -1,3 +1,3 @@
 TODO:
-
-Add book search
+- Add book search
+- Proper readme
