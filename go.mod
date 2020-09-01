@@ -4,6 +4,8 @@ go 1.13
 
 require (
 	github.com/ardanlabs/service v0.0.0-20200827121907-2a20cd9ba259
+	github.com/axwilliams/book-api v0.0.0-20200321112500-ecc823dd3650
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-playground/locales v0.13.0
 	github.com/go-playground/universal-translator v0.17.0
 	github.com/go-playground/validator v9.31.0+incompatible
