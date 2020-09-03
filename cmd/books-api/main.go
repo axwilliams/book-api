@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/axwilliams/books-api/cmd/books-api/handlers"
 	"github.com/axwilliams/books-api/internal/business/book"
@@ -16,6 +17,7 @@ import (
 	"github.com/axwilliams/books-api/internal/platform/auth"
 	"github.com/axwilliams/books-api/internal/platform/database"
 	"github.com/axwilliams/books-api/internal/platform/database/postgres"
+	"github.com/axwilliams/books-api/internal/platform/web"
 	"github.com/axwilliams/books-api/internal/schema"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -56,9 +58,9 @@ func run(log *log.Logger) error {
 	if len(*command) != 0 {
 		switch *command {
 		case "migrate":
-			err = schema.Migrate(db, log)
+			err = schema.Migrate(db)
 		case "seed":
-			err = schema.Seed(db, log)
+			err = schema.Seed(db)
 		default:
 			return fmt.Errorf("Unknown command: %+v", err)
 		}
@@ -82,6 +84,10 @@ func run(log *log.Logger) error {
 	api.Use(middleware.Authenticate)
 	api.Use(middleware.Logger)
 
+	api.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		web.Respond(w, "Books API v1", http.StatusOK)
+	})
+
 	api.HandleFunc("/books", bookHandler.FindAll).Methods("GET")
 	api.HandleFunc("/books/{id}", bookHandler.FindById).Methods("GET")
 	api.HandleFunc("/books", middleware.HasRole(bookHandler.Add, auth.RoleAuthor)).Methods("POST")
@@ -92,14 +98,23 @@ func run(log *log.Logger) error {
 	api.HandleFunc("/users/{id}", middleware.HasRole(userHandler.Edit, auth.RoleAdmin)).Methods("PATCH")
 	api.HandleFunc("/users/{id}", middleware.HasRole(userHandler.Delete, auth.RoleAdmin)).Methods("DELETE")
 
+	api.HandleFunc("/users/token", userHandler.Token).Methods("POST")
+
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
 
 	svrErrs := make(chan error, 1)
 
+	srv := http.Server{
+		Addr:         os.Getenv("SVR_PORT"),
+		Handler:      api,
+		WriteTimeout: 10 * time.Second,
+		ReadTimeout:  10 * time.Second,
+	}
+
 	go func() {
-		log.Printf("[main] API listening on %s", os.Getenv("SVR_PORT"))
-		svrErrs <- http.ListenAndServe(os.Getenv("SVR_PORT"), api)
+		log.Printf("[main] API listening on %s", srv.Addr)
+		svrErrs <- srv.ListenAndServe()
 	}()
 
 	select {

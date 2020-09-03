@@ -3,12 +3,9 @@ package schema
 import (
 	"database/sql"
 	"fmt"
-	"log"
 )
 
-func Migrate(db *sql.DB, log *log.Logger) error {
-	log.Println("[schema] Starting migration")
-
+func Migrate(db *sql.DB) error {
 	q := `CREATE TABLE IF NOT EXISTS users(
 					id UUID,
 					username varchar(255) NOT NULL,
@@ -36,7 +33,7 @@ func Migrate(db *sql.DB, log *log.Logger) error {
 		return fmt.Errorf("Creating table: book: %w", err)
 	}
 
-	log.Println("[schema] Migration complete")
+	fmt.Println("Migration complete")
 
 	return nil
 }

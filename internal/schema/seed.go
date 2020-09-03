@@ -3,12 +3,9 @@ package schema
 import (
 	"database/sql"
 	"fmt"
-	"log"
 )
 
-func Seed(db *sql.DB, log *log.Logger) error {
-	log.Println("[schema] Seeding data")
-
+func Seed(db *sql.DB) error {
 	q := `INSERT INTO users (id, username, email, password, roles)VALUES (
 					'a72bec75-0a5f-49af-a844-5763d188788e', 
 					'admin', 
@@ -45,7 +42,7 @@ func Seed(db *sql.DB, log *log.Logger) error {
 		return fmt.Errorf("[error] seeding table: book: %w", err)
 	}
 
-	log.Println("[schema] Seeding complete")
+	fmt.Println("Seeding complete")
 
 	return nil
 }
