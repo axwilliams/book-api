@@ -13,6 +13,7 @@ import (
 )
 
 var (
+	ErrBasicAuth      = errors.New("Basic auth requires a username and password")
 	ErrInvalidID      = errors.New("ID is not in the correct form")
 	ErrUsernameExists = errors.New("username is already taken")
 	ErrEmailExists    = errors.New("email is already taken")

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/axwilliams/books-api/internal/business/user"
@@ -9,8 +8,6 @@ import (
 	"github.com/axwilliams/books-api/internal/platform/web"
 	"github.com/gorilla/mux"
 )
-
-var ErrBasicAuth = errors.New("Basic auth requires a username and password")
 
 type UserHandler interface {
 	Add(w http.ResponseWriter, r *http.Request)
@@ -77,7 +74,7 @@ func (h *userHandler) Delete(w http.ResponseWriter, r *http.Request) {
 func (h *userHandler) Token(w http.ResponseWriter, r *http.Request) {
 	username, password, ok := r.BasicAuth()
 	if !ok {
-		web.RespondError(w, web.NewRequestError(ErrBasicAuth, http.StatusUnauthorized))
+		web.RespondError(w, web.NewRequestError(user.ErrBasicAuth, http.StatusUnauthorized))
 		return
 	}
 

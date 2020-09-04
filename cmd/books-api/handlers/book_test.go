@@ -23,7 +23,7 @@ func init() {
 	bookHandler = handlers.NewBookHandler(bookService)
 }
 
-func TestFindAll(t *testing.T) {
+func TestFindAllBooks(t *testing.T) {
 	r, err := http.NewRequest("GET", "/api/v1/books", nil)
 	if err != nil {
 		t.Errorf("\t%s\tRequest failed: %v\n", test.Failed, err)
@@ -46,7 +46,7 @@ func TestFindAll(t *testing.T) {
 	t.Logf("\t%s\tResults returned", test.Success)
 }
 
-func TestFindById(t *testing.T) {
+func TestFindBookById(t *testing.T) {
 	samples := []struct {
 		id         string
 		statusCode int
@@ -97,7 +97,7 @@ func TestFindById(t *testing.T) {
 	}
 }
 
-func TestAdd(t *testing.T) {
+func TestAddBook(t *testing.T) {
 	samples := []struct {
 		payload    string
 		statusCode int
@@ -183,7 +183,7 @@ func TestAdd(t *testing.T) {
 	}
 }
 
-func TestEdit(t *testing.T) {
+func TestEditBook(t *testing.T) {
 	samples := []struct {
 		id         string
 		payload    string
@@ -260,7 +260,7 @@ func TestEdit(t *testing.T) {
 	}
 }
 
-func TestDelete(t *testing.T) {
+func TestDeleteBook(t *testing.T) {
 	samples := []struct {
 		id         string
 		statusCode int

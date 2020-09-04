@@ -1,11 +1,12 @@
 TODO:
+- User tests
+- Auth tests
 - Add book search / including test handler and service
-- Proper readme
-- Remove pq.StringArray from users model
-- Docker ping
 - Move migrate and seed to own cmd
+- Remove pq.StringArray from users model - would also need to remove from code and tests
 - Run clean for sum and mod
-
+- Docker
+- Proper readme
 
 # Book API
 
