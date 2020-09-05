@@ -9,24 +9,17 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type UserHandler interface {
-	Add(w http.ResponseWriter, r *http.Request)
-	Edit(w http.ResponseWriter, r *http.Request)
-	Delete(w http.ResponseWriter, r *http.Request)
-	Token(w http.ResponseWriter, r *http.Request)
-}
-
-type userHandler struct {
+type UserHandler struct {
 	us user.Service
 }
 
 func NewUserHandler(us user.Service) UserHandler {
-	return &userHandler{
+	return UserHandler{
 		us,
 	}
 }
 
-func (h *userHandler) Add(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) Add(w http.ResponseWriter, r *http.Request) {
 	nu := user.NewUser{}
 
 	if err := web.Decode(r, &nu); err != nil {
@@ -43,7 +36,7 @@ func (h *userHandler) Add(w http.ResponseWriter, r *http.Request) {
 	web.Respond(w, web.Message("id", u.ID), http.StatusCreated)
 }
 
-func (h *userHandler) Edit(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) Edit(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	uu := user.UpdateUser{}
@@ -60,7 +53,7 @@ func (h *userHandler) Edit(w http.ResponseWriter, r *http.Request) {
 	web.Respond(w, nil, http.StatusOK)
 }
 
-func (h *userHandler) Delete(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	if err := h.us.Destroy(vars["id"]); err != nil {
@@ -71,7 +64,7 @@ func (h *userHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	web.Respond(w, nil, http.StatusOK)
 }
 
-func (h *userHandler) Token(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) Token(w http.ResponseWriter, r *http.Request) {
 	username, password, ok := r.BasicAuth()
 	if !ok {
 		web.RespondError(w, web.NewRequestError(user.ErrBasicAuth, http.StatusUnauthorized))

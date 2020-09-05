@@ -1,5 +1,4 @@
 TODO:
-- Remove BookHandler and UserHandler? Just has same methods
 - Remove pq.StringArray from users model - would also need to remove from code and tests
 - Run clean for sum and mod
 - Docker
