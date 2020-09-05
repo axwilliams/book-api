@@ -1,5 +1,4 @@
 TODO:
-- Add book search to test handler and service
 - Remove BookHandler and UserHandler? Just has same methods
 - Remove pq.StringArray from users model - would also need to remove from code and tests
 - Run clean for sum and mod

@@ -97,6 +97,80 @@ func TestFindBookById(t *testing.T) {
 	}
 }
 
+func TestSearchBook(t *testing.T) {
+	samples := []struct {
+		id         string
+		statusCode int
+		expected   string
+		query      map[string]string
+	}{
+		// ISBN found
+		{
+			query:      map[string]string{"isbn": "978-0241372579"},
+			statusCode: http.StatusOK,
+			expected:   `[{"id":"f4ac7e14-fc8e-4096-b956-34e5a33040f2","isbn":"978-0241372579","title":"The Castle","author":"Franz Kafka","category":"Fiction"}]`,
+		},
+		// Title found
+		{
+			query:      map[string]string{"title": "The Castle"},
+			statusCode: http.StatusOK,
+			expected:   `[{"id":"f4ac7e14-fc8e-4096-b956-34e5a33040f2","isbn":"978-0241372579","title":"The Castle","author":"Franz Kafka","category":"Fiction"}]`,
+		},
+		// Author found
+		{
+			query:      map[string]string{"author": "Franz Kafka"},
+			statusCode: http.StatusOK,
+			expected:   `[{"id":"f4ac7e14-fc8e-4096-b956-34e5a33040f2","isbn":"978-0241372579","title":"The Castle","author":"Franz Kafka","category":"Fiction"}]`,
+		},
+		// Category found
+		{
+			query:      map[string]string{"category": "Fiction"},
+			statusCode: http.StatusOK,
+			expected:   `[{"id":"f4ac7e14-fc8e-4096-b956-34e5a33040f2","isbn":"978-0241372579","title":"The Castle","author":"Franz Kafka","category":"Fiction"},{"id":"71432eb9-58da-4eae-aa20-ccc49064246f","isbn":"978-1451673319","title":"Fahrenheit 451","author":"Ray Bradbury","category":"Fiction"}]`,
+		},
+		// Sort order
+		{
+			query:      map[string]string{"sort": "author", "order": "desc"},
+			statusCode: http.StatusOK,
+			expected:   `[{"id":"f4ac7e14-fc8e-4096-b956-34e5a33040f2","isbn":"978-0241372579","title":"The Castle","author":"Franz Kafka","category":"Fiction"},{"id":"562e1fe0-0dde-4717-a008-cd2a699301d2","isbn":"978-0465025275","title":"Six Easy Pieces","author":"Richard Feynman","category":"Science"},{"id":"71432eb9-58da-4eae-aa20-ccc49064246f","isbn":"978-1451673319","title":"Fahrenheit 451","author":"Ray Bradbury","category":"Fiction"}]`,
+		},
+		// Limit and offset
+		{
+			query:      map[string]string{"limit": "2", "offset": "1"},
+			statusCode: http.StatusOK,
+			expected:   `[{"id":"71432eb9-58da-4eae-aa20-ccc49064246f","isbn":"978-1451673319","title":"Fahrenheit 451","author":"Ray Bradbury","category":"Fiction"},{"id":"562e1fe0-0dde-4717-a008-cd2a699301d2","isbn":"978-0465025275","title":"Six Easy Pieces","author":"Richard Feynman","category":"Science"}]`,
+		},
+	}
+
+	for _, sample := range samples {
+		r, err := http.NewRequest("GET", "/api/v1/search/books", nil)
+		if err != nil {
+			t.Errorf("\t%s\tRequest failed: %v\n", test.Failed, err)
+		}
+
+		q := r.URL.Query()
+		for k, v := range sample.query {
+			q.Add(k, v)
+		}
+		r.URL.RawQuery = q.Encode()
+
+		rr := httptest.NewRecorder()
+		h := http.HandlerFunc(bookHandler.Search)
+		h.ServeHTTP(rr, r)
+
+		if sample.statusCode != rr.Code {
+			t.Fatalf("\t%s\tWrong status code: want %v got %v", test.Failed, sample.statusCode, rr.Code)
+		}
+		t.Logf("\t%s\tStatus code correct: %v", test.Success, rr.Code)
+
+		res := rr.Body.String()
+		if res != sample.expected {
+			t.Fatalf("\t%s\tWrong response: want %v got %v", test.Failed, sample.expected, res)
+		}
+		t.Logf("\t%s\tResponse data correct", test.Success)
+	}
+}
+
 func TestAddBook(t *testing.T) {
 	samples := []struct {
 		payload    string

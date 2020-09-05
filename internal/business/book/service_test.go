@@ -44,6 +44,40 @@ func TestGetById(t *testing.T) {
 	t.Logf("\t%s\tBook found", test.Success)
 }
 
+func TestSearch(t *testing.T) {
+	sp := book.SearchParams{
+		ISBN:     "978-0241372579",
+		Title:    "The Castle",
+		Author:   "Franz Kafka",
+		Category: "Fiction",
+	}
+
+	sort := "author"
+	order := "desc"
+	limitStr := "1"
+	offsetStr := ""
+
+	res, err := bookService.Search(sp, sort, order, limitStr, offsetStr)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	expected := make([]book.Book, 0)
+
+	expected = append(expected, book.Book{
+		ID:       "f4ac7e14-fc8e-4096-b956-34e5a33040f2",
+		ISBN:     "978-0241372579",
+		Title:    "The Castle",
+		Author:   "Franz Kafka",
+		Category: "Fiction",
+	})
+
+	if ok := reflect.DeepEqual(res, expected); !ok {
+		t.Fatalf("\t%s\tError searching books: want %v got %v", test.Failed, expected, res)
+	}
+	t.Logf("\t%s\tSearch success", test.Success)
+}
+
 func TestCreate(t *testing.T) {
 	nb := &book.NewBook{
 		ISBN:     "978-0099448792",
