@@ -90,6 +90,7 @@ func run(log *log.Logger) error {
 
 	api.HandleFunc("/books", bookHandler.FindAll).Methods("GET")
 	api.HandleFunc("/books/{id}", bookHandler.FindById).Methods("GET")
+	api.HandleFunc("/search/books", bookHandler.Search).Methods("GET")
 	api.HandleFunc("/books", middleware.HasRole(bookHandler.Add, auth.RoleAuthor)).Methods("POST")
 	api.HandleFunc("/books/{id}", middleware.HasRole(bookHandler.Edit, auth.RoleAuthor)).Methods("PATCH")
 	api.HandleFunc("/books/{id}", middleware.HasRole(bookHandler.Delete, auth.RoleAuthor)).Methods("DELETE")

@@ -1,8 +1,6 @@
 TODO:
-- User tests
-- Auth tests
-- Add book search / including test handler and service
-- Move migrate and seed to own cmd
+- Add book search to test handler and service
+- Remove BookHandler and UserHandler? Just has same methods
 - Remove pq.StringArray from users model - would also need to remove from code and tests
 - Run clean for sum and mod
 - Docker

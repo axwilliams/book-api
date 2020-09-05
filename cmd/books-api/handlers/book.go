@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/axwilliams/books-api/internal/business/book"
 	"github.com/axwilliams/books-api/internal/platform/web"
@@ -11,6 +12,7 @@ import (
 type BookHandler interface {
 	FindAll(w http.ResponseWriter, r *http.Request)
 	FindById(w http.ResponseWriter, r *http.Request)
+	Search(w http.ResponseWriter, r *http.Request)
 	Add(w http.ResponseWriter, r *http.Request)
 	Edit(w http.ResponseWriter, r *http.Request)
 	Delete(w http.ResponseWriter, r *http.Request)
@@ -46,6 +48,29 @@ func (h *bookHandler) FindById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	web.Respond(w, bk, http.StatusOK)
+}
+
+func (h *bookHandler) Search(w http.ResponseWriter, r *http.Request) {
+	q := r.URL.Query()
+
+	params := book.SearchParams{}
+	params.ISBN = strings.TrimSpace(q.Get("isbn"))
+	params.Title = strings.TrimSpace(q.Get("title"))
+	params.Author = strings.TrimSpace(q.Get("author"))
+	params.Category = strings.TrimSpace(q.Get("category"))
+
+	sort := strings.TrimSpace(q.Get("sort"))
+	order := strings.TrimSpace(q.Get("order"))
+	limitStr := strings.TrimSpace(q.Get("limit"))
+	offsetStr := strings.TrimSpace(q.Get("offset"))
+
+	bks, err := h.bs.Search(params, sort, order, limitStr, offsetStr)
+	if err != nil {
+		web.RespondError(w, err)
+		return
+	}
+
+	web.Respond(w, bks, http.StatusOK)
 }
 
 func (h *bookHandler) Add(w http.ResponseWriter, r *http.Request) {

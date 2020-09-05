@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/axwilliams/books-api/internal/platform/web"
 )
@@ -17,6 +18,7 @@ var (
 type Repository interface {
 	GetAll() ([]Book, error)
 	GetById(id string) (*Book, error)
+	Search(sp SearchParams, sortOrder string, limit, offset int) ([]Book, error)
 	Create(bk *Book) error
 	Update(bk *Book) error
 	Destroy(id string) error
@@ -68,6 +70,69 @@ func (r *repository) GetById(id string) (*Book, error) {
 	}
 
 	return bk, nil
+}
+
+func (r *repository) Search(sp SearchParams, sortOrder string, limit, offset int) ([]Book, error) {
+	where := ""
+	args := []interface{}{}
+
+	q := `SELECT * FROM book `
+
+	if sp.ISBN != "" {
+		args = append(args, sp.ISBN)
+		where += " isbn = $" + strconv.Itoa(len(args)) + " AND "
+	}
+
+	if sp.Title != "" {
+		args = append(args, "%"+sp.Title+"%")
+		where += " title ILIKE $" + strconv.Itoa(len(args)) + " AND "
+	}
+
+	if sp.Author != "" {
+		args = append(args, "%"+sp.Author+"%")
+		where += " author ILIKE $" + strconv.Itoa(len(args)) + " AND "
+	}
+
+	if sp.Category != "" {
+		args = append(args, sp.Category)
+		where += " category = $" + strconv.Itoa(len(args)) + " AND "
+	}
+
+	if wlen := len(where); wlen > 0 {
+		where = "WHERE " + where[:wlen-len(" AND ")]
+	}
+
+	if sortOrder != "" {
+		where += fmt.Sprintf(" ORDER BY %s", sortOrder)
+	}
+
+	if limit != 0 {
+		where += fmt.Sprintf(" LIMIT %d", limit)
+	}
+
+	if offset != 0 {
+		where += fmt.Sprintf(" OFFSET %d", offset)
+	}
+
+	rows, err := r.db.Query(q+where, args...)
+	if err != nil {
+		return nil, fmt.Errorf("Searching books: %w", err)
+	}
+	defer rows.Close()
+
+	bks := make([]Book, 0)
+	for rows.Next() {
+		bk := Book{}
+		if err = rows.Scan(&bk.ID, &bk.ISBN, &bk.Title, &bk.Author, &bk.Category); err != nil {
+			return nil, fmt.Errorf("Scanning book rows: %w", err)
+		}
+		bks = append(bks, bk)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("Iterating book rows: %w", err)
+	}
+
+	return bks, nil
 }
 
 func (r *repository) Create(bk *Book) error {

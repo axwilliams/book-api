@@ -3,6 +3,7 @@ package book
 import (
 	"errors"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/axwilliams/books-api/internal/platform/web"
@@ -10,15 +11,14 @@ import (
 )
 
 var (
-	ErrInvalidID     = errors.New("ID is not in the correct form")
-	ErrInvalidSort   = errors.New("invalid sort field")
-	ErrInvalidLimit  = errors.New("limit is not in the correct form")
-	ErrInvalidOffset = errors.New("offset is not in the correct form")
+	ErrInvalidID   = errors.New("ID is not in the correct form")
+	ErrInvalidSort = errors.New("invalid sort field")
 )
 
 type Service interface {
 	GetAll() ([]Book, error)
 	GetById(id string) (*Book, error)
+	Search(sp SearchParams, sort, order, limitStr, offsetStr string) ([]Book, error)
 	Create(nb *NewBook) (*Book, error)
 	Update(id string, ub UpdateBook) error
 	Destroy(id string) error
@@ -34,6 +34,13 @@ func NewService(br Repository) Service {
 	}
 }
 
+type SearchParams struct {
+	ISBN     string
+	Title    string
+	Author   string
+	Category string
+}
+
 func (s *service) GetAll() ([]Book, error) {
 	return s.br.GetAll()
 }
@@ -44,6 +51,30 @@ func (s *service) GetById(id string) (*Book, error) {
 	}
 
 	return s.br.GetById(id)
+}
+
+func (s *service) Search(sp SearchParams, sort, order, limitStr, offsetStr string) ([]Book, error) {
+	sort = strings.ToLower(sort)
+	order = strings.ToLower(order)
+
+	sortOrder := ""
+	if sort == "id" || sort == "isbn" || sort == "title" || sort == "author" {
+		if order == "asc" || order == "desc" {
+			sortOrder = sort + " " + order
+		}
+	}
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		limit = 0
+	}
+
+	offset, err := strconv.Atoi(offsetStr)
+	if err != nil {
+		offset = 0
+	}
+
+	return s.br.Search(sp, sortOrder, limit, offset)
 }
 
 func (s *service) Create(nb *NewBook) (*Book, error) {
