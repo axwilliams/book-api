@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -52,22 +51,19 @@ func run(log *log.Logger) error {
 		db.Close()
 	}()
 
-	command := flag.String("command", "", "")
-	flag.Parse()
+	fmt.Println("Waiting for database ...")
 
-	if len(*command) != 0 {
-		switch *command {
-		case "migrate":
-			err = schema.Migrate(db)
-		case "seed":
-			err = schema.Seed(db)
-		default:
-			return fmt.Errorf("Unknown command: %+v", err)
+	var pingError error
+	for attempts := 1; attempts <= 20; attempts++ {
+		pingError = db.Ping()
+		if pingError == nil {
+			break
 		}
+		time.Sleep(time.Duration(attempts) * 100 * time.Millisecond)
+	}
 
-		if err != nil {
-			return fmt.Errorf("Executing %s command: %+v", *command, err)
-		}
+	if err := schema.Load(db); err != nil {
+		return fmt.Errorf("Loading data: %+v", err)
 	}
 
 	bookRepository := book.NewRepository(db)
