@@ -46,7 +46,7 @@ The database tables will created and seeded with example data, including an admi
 
 ## Endpoints
 
-##### POST https://<i></i>localhost:8080/api/v1/users/token
+### POST https://<i></i>localhost:8080/api/v1/users/token
 
 Response:
 ```
@@ -57,7 +57,7 @@ HTTP/1.1 200 OK
 }
 ```
 
-##### POST http://<i></i>localhost:8080/api/v1/books
+### POST http://<i></i>localhost:8080/api/v1/books
 
 Request:
 ```
@@ -78,7 +78,7 @@ HTTP/1.1 201 Created
 }
 ```
 
-##### PATCH http://<i></i>localhost:8080/api/v1/books/{id}
+### PATCH http://<i></i>localhost:8080/api/v1/books/{id}
 
 Request:
 ```
@@ -95,14 +95,14 @@ Response:
 HTTP/1.1 200 OK
 ```
 
-##### DELETE http://<i></i>localhost:8080/api/v1/books/{id}
+### DELETE http://<i></i>localhost:8080/api/v1/books/{id}
 
 Response:
 ```
 HTTP/1.1 200 OK
 ```
 
-##### GET http://<i></i>localhost:8080/api/v1/books/{id}
+### GET http://<i></i>localhost:8080/api/v1/books/{id}
 
 Response:
 ```
@@ -117,7 +117,7 @@ HTTP/1.1 200 OK
 }
 ```
 
-##### GET http://<i></i>localhost:8080/api/v1/books
+### GET http://<i></i>localhost:8080/api/v1/books
 
 Response:
 ```
@@ -135,7 +135,7 @@ HTTP/1.1 200 OK
 ]
 ```
 
-##### GET http://<i></i>localhost:8080/api/v1/search/books
+### GET http://<i></i>localhost:8080/api/v1/search/books
 
 Parameters: 
 
@@ -157,7 +157,7 @@ HTTP/1.1 200 OK
 ]
 ```
 
-##### POST http://<i></i>localhost:8080/api/v1/users
+### POST http://<i></i>localhost:8080/api/v1/users
 
 Request:
 ```
@@ -179,7 +179,7 @@ HTTP/1.1 201 Created
 ```
 
 
-##### PATCH http://<i></i>localhost:8080/api/v1/users/{id}
+### PATCH http://<i></i>localhost:8080/api/v1/users/{id}
 
 Request:
 ```
@@ -196,7 +196,7 @@ Response:
 HTTP/1.1 200 OK
 ```
 
-##### DELETE http://<i></i>localhost:8080/api/v1/users/{id}
+### DELETE http://<i></i>localhost:8080/api/v1/users/{id}
 
 Response:
 ```
