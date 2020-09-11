@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/axwilliams/books-api/internal/platform/auth"
-	"github.com/axwilliams/books-api/internal/test"
+	"github.com/axwilliams/book-api/internal/platform/auth"
+	"github.com/axwilliams/book-api/internal/test"
 )
 
 func TestClaims(t *testing.T) {

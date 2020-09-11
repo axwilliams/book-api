@@ -3,8 +3,8 @@ package mock
 import (
 	"net/http"
 
-	"github.com/axwilliams/books-api/internal/business/user"
-	"github.com/axwilliams/books-api/internal/platform/web"
+	"github.com/axwilliams/book-api/internal/business/user"
+	"github.com/axwilliams/book-api/internal/platform/web"
 	"github.com/lib/pq"
 )
 

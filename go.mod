@@ -1,4 +1,4 @@
-module github.com/axwilliams/books-api
+module github.com/axwilliams/book-api
 
 go 1.13
 

@@ -17,7 +17,7 @@ RUN go mod download
 COPY . .
 
 # Build the app
-WORKDIR /app/cmd/books-api
+WORKDIR /app/cmd/book-api
 RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o main .
 
 # Start a new stage from scratch
@@ -27,7 +27,7 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 
 # Copy the pre-built binary file from the previous stage
-COPY --from=builder /app/cmd/books-api/main .
+COPY --from=builder /app/cmd/book-api/main .
 COPY --from=builder /app/.env .
 
 # Expose port 8080 to the outside world

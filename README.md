@@ -40,7 +40,7 @@ To run locally (without Docker):
 1. Create a local Postgres database
 2. Change the settings in the `.env` file to match the local database
 3. Make sure the `.env` file is loaded as `godotenv.Load("../../.env")`
-4. From insise the `cmd/books-api` directory run: `go run main.go`
+4. From insise the `cmd/book-api` directory run: `go run main.go`
 
 The database tables will created and seeded with example data, including an admin with the username `admin` and the password `Adminl#1`. These admin credentials should be passed as the Basic Auth Header to the `/users/token` endpoint in order to retrieve the login token. The login token should then be used as the Bearer Token for all other endpoints.
 

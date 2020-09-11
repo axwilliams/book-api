@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"net/url"
 
-	"github.com/axwilliams/books-api/internal/platform/database"
+	"github.com/axwilliams/book-api/internal/platform/database"
 	_ "github.com/lib/pq"
 )
 

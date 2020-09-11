@@ -7,10 +7,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/axwilliams/books-api/internal/platform/database"
-	"github.com/axwilliams/books-api/internal/platform/database/postgres"
-	"github.com/axwilliams/books-api/internal/schema"
-	pg_test "github.com/axwilliams/books-api/internal/test/postgres"
+	"github.com/axwilliams/book-api/internal/platform/database"
+	"github.com/axwilliams/book-api/internal/platform/database/postgres"
+	"github.com/axwilliams/book-api/internal/schema"
+	pg_test "github.com/axwilliams/book-api/internal/test/postgres"
 )
 
 const (

@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/axwilliams/books-api/internal/platform/web"
+	"github.com/axwilliams/book-api/internal/platform/web"
 	"github.com/dgrijalva/jwt-go"
 )
 

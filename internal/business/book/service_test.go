@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/axwilliams/books-api/internal/business/book"
-	"github.com/axwilliams/books-api/internal/test"
+	"github.com/axwilliams/book-api/internal/business/book"
+	"github.com/axwilliams/book-api/internal/test"
 )
 
 var bookService book.Service

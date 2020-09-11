@@ -7,10 +7,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/axwilliams/books-api/cmd/books-api/handlers"
-	"github.com/axwilliams/books-api/internal/business/book"
-	"github.com/axwilliams/books-api/internal/test"
-	"github.com/axwilliams/books-api/internal/test/mock"
+	"github.com/axwilliams/book-api/cmd/book-api/handlers"
+	"github.com/axwilliams/book-api/internal/business/book"
+	"github.com/axwilliams/book-api/internal/test"
+	"github.com/axwilliams/book-api/internal/test/mock"
 	"github.com/gorilla/mux"
 	"github.com/twinj/uuid"
 )

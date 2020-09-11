@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/axwilliams/books-api/internal/platform/auth"
-	"github.com/axwilliams/books-api/internal/platform/web"
+	"github.com/axwilliams/book-api/internal/platform/auth"
+	"github.com/axwilliams/book-api/internal/platform/web"
 )
 
 var (

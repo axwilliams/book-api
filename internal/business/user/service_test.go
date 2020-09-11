@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/axwilliams/books-api/internal/business/user"
-	"github.com/axwilliams/books-api/internal/test"
+	"github.com/axwilliams/book-api/internal/business/user"
+	"github.com/axwilliams/book-api/internal/test"
 	"github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
 )

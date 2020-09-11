@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/axwilliams/books-api/internal/platform/web"
+	"github.com/axwilliams/book-api/internal/platform/web"
 	"github.com/google/uuid"
 )
 

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/axwilliams/books-api/internal/platform/auth"
+	"github.com/axwilliams/book-api/internal/platform/auth"
 )
 
 type loggingResponseWriter struct {
