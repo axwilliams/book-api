@@ -62,8 +62,12 @@ func run(log *log.Logger) error {
 		time.Sleep(time.Duration(attempts) * 100 * time.Millisecond)
 	}
 
-	if err := schema.Load(db); err != nil {
-		return fmt.Errorf("Loading data: %+v", err)
+	if err := schema.Migrate(db); err != nil {
+		return fmt.Errorf("Migrating tables: %+v", err)
+	}
+
+	if err := schema.Seed(db); err != nil {
+		return fmt.Errorf("Seeding data: %+v", err)
 	}
 
 	bookRepository := book.NewRepository(db)
