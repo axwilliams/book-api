@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -121,10 +122,17 @@ func run(log *log.Logger) error {
 	select {
 	case err := <-svrErrs:
 		return fmt.Errorf("Server error: %+v", err)
-	case sig := <-shutdown:
-		log.Printf("[main] Starting shutdown: %v", sig)
 
-		// TODO: Add shutdown code
+	case sig := <-shutdown:
+		log.Printf("[main] Starting graceful shutdown: %v", sig)
+
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
+		if err := srv.Shutdown(ctx); err != nil {
+			srv.Close()
+			return fmt.Errorf("Graceful shutdown failed: %+v", err)
+		}
 	}
 
 	return nil
